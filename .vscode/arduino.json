@@ -1,5 +1,4 @@
 {
     "board": "Croduino_Boards:avr:basic3",
-    "port": "/dev/cu.usbserial-1420",
-    "sketch": "Weather_Station_And_Clock.ino"
+    "port": "/dev/cu.usbserial-1420"
 }
