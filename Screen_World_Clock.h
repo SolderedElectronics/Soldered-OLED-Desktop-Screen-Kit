@@ -2,6 +2,8 @@
 #include "PCF85063A-SOLDERED.h"
 #include "OLED-Display-SOLDERED.h"
 
+#include "World.h"
+
 #include "Helpers.h"
 #include "fonts/DSEG14_Modern_Mini_Regular_15.h"
 
@@ -11,6 +13,7 @@ inline void drawWorldClock(OLED_Display &display,
                            BME280 &bme280,
                            PCF85063A &pcf85063a)
 {
+    resetText(display);
     display.clearDisplay();
     // display.drawBitmap(0, 0, world_map, 200, 101, SSD1306_BLACK, SSD1306_WHITE);
 
@@ -18,11 +21,6 @@ inline void drawWorldClock(OLED_Display &display,
     display.startWrite();
 
     int R = 35;
-
-    int d0 = 10000, x0, y0,
-        d1 = 10000, x1, y1,
-        d2 = 10000, x2, y2;
-
     for (int i = 0; i < 64; ++i)
         for (int j = 0; j < 128; ++j)
         {

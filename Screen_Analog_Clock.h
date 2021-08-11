@@ -10,6 +10,7 @@ inline void drawAnalogClock(OLED_Display &display,
                             BME280 &bme280,
                             PCF85063A &pcf85063a)
 {
+    resetText(display);
     display.clearDisplay();
 
     for (int i = 0; i < 24; ++i)

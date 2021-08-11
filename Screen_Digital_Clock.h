@@ -11,6 +11,7 @@ inline void drawDigitalClock(OLED_Display &display,
                              BME280 &bme280,
                              PCF85063A &pcf85063a)
 {
+    resetText(display);
     display.clearDisplay();
 
     display.setFont(&DSEG14_Modern_Mini_Regular_15);
