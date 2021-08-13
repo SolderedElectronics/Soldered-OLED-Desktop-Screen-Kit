@@ -8,15 +8,54 @@
 #include "Screen_Stopwatch.h"
 #include "Screen_Timer.h"
 
+#include "avdweb_Switch.h"
+#include <FrequencyTimer2.h>
+
 #include "Helpers.h"
 
 OLED_Display display;
 BME280 bme280;
 PCF85063A pcf85063a;
 
+uint8_t state = 2;
+Switch btn1(2);
+Switch btn2(3);
+
+void btn1CallbackSingle(void *s)
+{
+    state = (state + 1) % 5;
+}
+
+void btn2CallbackSingle(void *s)
+{
+    if (state == 2)
+        timerStateCallback();
+}
+
+void btn2CallbackDouble(void *s)
+{
+    if (state == 2)
+        timerSetupCallback();
+}
+
+void timer2ISR()
+{
+    btn1.poll();
+    btn2.poll();
+}
+
 void setup()
 {
-    Serial.begin(115200);
+    pinMode(13, OUTPUT);
+    // Serial.begin(115200);
+
+    FrequencyTimer2::setPeriod(500);
+    FrequencyTimer2::setOnOverflow(timer2ISR);
+
+    btn1.setSingleClickCallback(&btn1CallbackSingle, (void *)"0");
+
+    btn2.setSingleClickCallback(&btn2CallbackSingle, (void *)"0");
+    btn2.setDoubleClickCallback(&btn2CallbackDouble, (void *)"1");
 
     bme280.begin();
     pcf85063a.begin();
@@ -27,14 +66,29 @@ void setup()
 
 void loop()
 {
-    drawTimer(display, bme280, pcf85063a);
-    delay(1000);
-    drawWorldClock(display, bme280, pcf85063a);
-    delay(1000);
-    drawAnalogClock(display, bme280, pcf85063a);
-    delay(1000);
-    drawDigitalClock(display, bme280, pcf85063a);
-    delay(1000);
-    drawStopwatch(display, bme280, pcf85063a);
-    delay(1000);
+    switch (state)
+    {
+    case 0:
+        drawAnalogClock(display, bme280, pcf85063a);
+        delay(100);
+        break;
+    case 1:
+        drawDigitalClock(display, bme280, pcf85063a);
+        delay(100);
+        break;
+    case 2:
+        drawTimer(display, bme280, pcf85063a);
+        delay(10);
+        break;
+    case 3:
+        drawWorldClock(display, bme280, pcf85063a);
+        delay(10);
+        break;
+    case 4:
+        drawStopwatch(display, bme280, pcf85063a);
+        delay(10);
+        break;
+    default:
+        break;
+    }
 }

@@ -7,9 +7,9 @@
 
 #pragma once
 
-inline void drawDigitalClock(OLED_Display &display,
-                             BME280 &bme280,
-                             PCF85063A &pcf85063a)
+void drawDigitalClock(OLED_Display &display,
+                      BME280 &bme280,
+                      PCF85063A &pcf85063a)
 {
     resetText(display);
     display.clearDisplay();
@@ -40,15 +40,37 @@ inline void drawDigitalClock(OLED_Display &display,
     display.setFont();
     display.setTextSize(1);
 
-    char a[128];
-    sprintf(a, "%2d s  %2d.%2d C  %2d.%2d %%  %3d.%2d hPa  ",
-            secs,
-            (int)temp,
-            (int)abs(temp * 100) % 100,
-            (int)humidity,
-            (int)(humidity * 100) % 100,
-            (int)pressure,
-            (int32_t)(pressure * 100) % 100);
+    char a[] = "00 s  00.00 C  00.00 %  0000.00 hPa  ";
+
+    a[0] = secs / 10 % 10 + '0';
+    if (a[0] == '0')
+        a[0] = ' ';
+    a[1] = secs % 10 + '0';
+
+    a[6] = (int)temp / 10 % 10 + '0';
+    if (a[6] == '0')
+        a[6] = ' ';
+    a[7] = (int)temp % 10 + '0';
+    a[9] = (int)abs(temp * 10) % 10 + '0';
+    a[10] = (int)abs(temp * 100) % 10 + '0';
+
+    a[15] = (int)humidity / 10 % 10 + '0';
+    if (a[15] == '0')
+        a[15] = ' ';
+    a[16] = (int)humidity % 10 + '0';
+    a[18] = (int)abs(humidity * 10) % 10 + '0';
+    a[19] = (int)abs(humidity * 100) % 10 + '0';
+
+    a[24] = (int)pressure / 1000 % 10 + '0';
+    if (a[24] == '0')
+        a[24] = ' ';
+
+    a[25] = (int)pressure / 100 % 10 + '0';
+    a[26] = (int)pressure / 10 % 10 + '0';
+    a[27] = (int)pressure % 10 + '0';
+
+    a[29] = (int)(pressure * 10) % 10 + '0';
+    a[30] = (int32_t)(pressure * 100) % 10 + '0';
 
     int16_t x1, y1;
     uint16_t w, h;

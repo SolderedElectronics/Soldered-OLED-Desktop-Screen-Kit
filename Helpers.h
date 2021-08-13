@@ -2,7 +2,7 @@
 
 #pragma once
 
-inline void drawPolarLine(OLED_Display &display, int x, int y, float phi, int from, int to, float a = 1.0f, float b = 1.0f)
+void drawPolarLine(OLED_Display &display, int x, int y, float phi, int from, int to, float a = 1.0f, float b = 1.0f)
 {
     int x1 = x + (int)(cos(phi) * a * (float)from);
     int y1 = y + (int)(sin(phi) * b * (float)from);
@@ -12,7 +12,7 @@ inline void drawPolarLine(OLED_Display &display, int x, int y, float phi, int fr
     display.drawLine(x1, y1, x2, y2, SSD1306_WHITE);
 }
 
-inline uint16_t isqrt(uint16_t n)
+uint16_t isqrt(uint16_t n)
 {
     uint16_t g = 0x8000;
     uint16_t c = 0x8000;
@@ -32,7 +32,7 @@ inline uint16_t isqrt(uint16_t n)
     return 0;
 }
 
-inline void resetText(OLED_Display &display)
+void resetText(OLED_Display &display)
 {
     display.setFont();
     display.setTextColor(SSD1306_WHITE);
