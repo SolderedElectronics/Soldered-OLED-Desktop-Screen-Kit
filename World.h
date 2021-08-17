@@ -1024,11 +1024,67 @@ const uint8_t world_map[] PROGMEM = {
     0xff,
     0xff,
     0xff,
-    0xff,
-};
+    0xff};
 
 bool getWorldXY(int x, int y)
 {
   return ((uint8_t)pgm_read_byte(&world_map[16 * y + (x >> 3)]) &
           (1 << (7 - (x & 7))));
 }
+
+const char city_0[] PROGMEM = "NYC";
+const char city_1[] PROGMEM = "LON";
+const char city_2[] PROGMEM = "PAR";
+const char city_3[] PROGMEM = "TKY";
+const char city_4[] PROGMEM = "HKG";
+const char city_5[] PROGMEM = "SGP";
+const char city_6[] PROGMEM = "LAX";
+const char city_7[] PROGMEM = "BEI";
+const char city_8[] PROGMEM = "WSH";
+const char city_9[] PROGMEM = "SYD";
+const char city_10[] PROGMEM = "SEO";
+const char city_11[] PROGMEM = "BER";
+const char city_12[] PROGMEM = "MCW";
+const char city_13[] PROGMEM = "ZAG";
+const char city_14[] PROGMEM = "DUB";
+const char city_16[] PROGMEM = "ROM";
+
+const char *const cityName[] PROGMEM = {
+    city_0,
+    city_1,
+    city_2,
+    city_3,
+    city_4,
+    city_5,
+    city_6,
+    city_7,
+    city_8,
+    city_9,
+    city_10,
+    city_11,
+    city_12,
+    city_13,
+    city_14,
+    city_16,
+};
+
+const PROGMEM uint8_t cityCoordAndZone[] PROGMEM = {
+    112, 42, -4 + 24,
+    13, 31, 1,
+    20, 32, 2,
+    94, 43, 9,
+    81, 51, 8,
+    75, 63, 8,
+    152, 42, -7 + 24,
+    81, 40, 8,
+    179, 37, -7 + 24,
+    100, 86, 10,
+    88, 42, 9,
+    22, 32, 2,
+    37, 28, 3,
+    24, 36, 2,
+    47, 51, 4,
+    22, 39, 2};
+
+//200x101
+//128x64

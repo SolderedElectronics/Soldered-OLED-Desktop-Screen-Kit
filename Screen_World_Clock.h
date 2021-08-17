@@ -9,6 +9,48 @@
 
 #pragma once
 
+char city0[] = "ZAG";
+int city0_x, city0_y, city0_t;
+char city1[] = "ZAG";
+int city1_x, city1_y, city1_t;
+char city2[] = "ZAG";
+int city2_x, city2_y, city2_t;
+
+void worldClockCallback()
+{
+    int num_shuffles = 10;
+
+    int n = sizeof cityName / sizeof cityName[0];
+    int idx[n];
+
+    for (int i = 0; i < n; ++i)
+        idx[i] = i;
+
+    for (int j = 0; j < num_shuffles; j++)
+    {
+        for (int i = 0; i < n - 1; i++)
+        {
+            size_t j = i + rand() / (RAND_MAX / (n - i) + 1);
+            int t = idx[j];
+            idx[j] = idx[i];
+            idx[i] = t;
+        }
+    }
+
+    strcpy_P(city0, (PGM_P)pgm_read_word(&(cityName[idx[0]])));
+    city0_x = pgm_read_byte_near(cityCoordAndZone + 3 * idx[0]);
+    city0_y = pgm_read_byte_near(cityCoordAndZone + 3 * idx[0] + 1);
+    city0_t = pgm_read_byte_near(cityCoordAndZone + 3 * idx[0] + 2);
+    strcpy_P(city1, (PGM_P)pgm_read_word(&(cityName[idx[1]])));
+    city1_x = pgm_read_byte_near(cityCoordAndZone + 3 * idx[1]);
+    city1_y = pgm_read_byte_near(cityCoordAndZone + 3 * idx[1] + 1);
+    city1_t = pgm_read_byte_near(cityCoordAndZone + 3 * idx[1] + 2);
+    strcpy_P(city2, (PGM_P)pgm_read_word(&(cityName[idx[2]])));
+    city2_x = pgm_read_byte_near(cityCoordAndZone + 3 * idx[2]);
+    city2_y = pgm_read_byte_near(cityCoordAndZone + 3 * idx[2] + 1);
+    city2_t = pgm_read_byte_near(cityCoordAndZone + 3 * idx[2] + 2);
+}
+
 void drawWorldClock(OLED_Display &display,
                     BME280 &bme280,
                     PCF85063A &pcf85063a)
@@ -42,7 +84,7 @@ void drawWorldClock(OLED_Display &display,
     display.setTextColor(SSD1306_WHITE);
     display.setTextSize(1);
 
-    int x = 50, y = 20, r, _x;
+    int x = city0_x, y = city0_y, r, _x;
 
     r = 35 - 0.03 * (y - 32) * (y - 32);
     _x = (x - (millis() >> 7) & 127);
@@ -56,10 +98,10 @@ void drawWorldClock(OLED_Display &display,
     display.drawLine(71, 13, _x, y + 1, SSD1306_BLACK);
 
     display.setCursor(73, 10);
-    display.print("ZAG");
+    display.print(city0);
     display.print(" 13:00");
 
-    x = 100, y = 40;
+    x = city1_x, y = city1_y;
 
     r = 35 - 0.03 * (y - 32) * (y - 32);
     _x = (x - (millis() >> 7) & 127);
@@ -73,10 +115,10 @@ void drawWorldClock(OLED_Display &display,
     display.drawLine(71, 33, _x, y + 1, SSD1306_BLACK);
 
     display.setCursor(73, 30);
-    display.print("NYC");
+    display.print(city1);
     display.print(" 13:00");
 
-    x = 10, y = 50;
+    x = city2_x, y = city2_y;
 
     r = 35 - 0.03 * (y - 32) * (y - 32);
     _x = (x - (millis() >> 7) & 127);
@@ -90,7 +132,7 @@ void drawWorldClock(OLED_Display &display,
     display.drawLine(71, 53, _x, y + 1, SSD1306_BLACK);
 
     display.setCursor(73, 50);
-    display.print("TKY");
+    display.print(city2);
     display.print(" 13:00");
 
     display.display();

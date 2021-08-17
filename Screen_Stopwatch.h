@@ -5,6 +5,38 @@
 
 #pragma once
 
+uint8_t stopwatch_state = 0;
+uint32_t stopwatch_start = 0;
+uint32_t stopwatch_extra = 0;
+
+void stopwatchStateCallback()
+{
+    if (stopwatch_state == 0)
+    {
+        stopwatch_state = 1;
+
+        stopwatch_start = millis();
+        stopwatch_extra = 0;
+    }
+    else if (stopwatch_state == 1)
+    {
+        stopwatch_state = 2;
+
+        stopwatch_extra += millis() - stopwatch_start;
+    }
+    else if (stopwatch_state == 2)
+    {
+        stopwatch_state = 1;
+
+        stopwatch_start = millis();
+    }
+}
+
+void stopwatchSetupCallback()
+{
+    stopwatch_state = 0;
+}
+
 void drawStopwatch(OLED_Display &display,
                    BME280 &bme280,
                    PCF85063A &pcf85063a)
@@ -12,11 +44,22 @@ void drawStopwatch(OLED_Display &display,
     resetText(display);
     display.clearDisplay();
 
-    static uint32_t start = millis();
+    uint32_t m, s, cs;
 
-    uint32_t m = (millis() - start) / 1000 / 60 % 60;
-    uint32_t s = (millis() - start) / 1000 % 60;
-    uint32_t cs = (millis() - start) / 10 % 100;
+    if (stopwatch_state == 0)
+        m = s = cs = 0;
+    else if (stopwatch_state == 1)
+    {
+        m = (millis() - stopwatch_start + stopwatch_extra) / 1000 / 60 % 60;
+        s = (millis() - stopwatch_start + stopwatch_extra) / 1000 % 60;
+        cs = (millis() - stopwatch_start + stopwatch_extra) / 10 % 100;
+    }
+    else if (stopwatch_state == 2)
+    {
+        m = stopwatch_extra / 1000 / 60 % 60;
+        s = stopwatch_extra / 1000 % 60;
+        cs = stopwatch_extra / 10 % 100;
+    }
 
     for (int i = 0; i < 24; ++i)
         drawPolarLine(display, 100, 32, i / 24.0 * TWO_PI, (i % 2 == 0 ? 20 : 18), 22);

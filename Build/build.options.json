@@ -1,0 +1,12 @@
+{
+  "additionalFiles": "..,..,..,..,..,..,..,..,..,../..",
+  "builtInLibrariesFolders": "/Applications/Arduino.app/Contents/Java/libraries",
+  "builtInToolsFolders": "/Applications/Arduino.app/Contents/Java/tools-builder,/Applications/Arduino.app/Contents/Java/hardware/tools/avr,/Users/nitkonitkic/Library/Arduino15/packages",
+  "compiler.optimization_flags": "",
+  "customBuildProperties": "build.path=/Users/nitkonitkic/Documents/Code/Weather_Station_And_Clock/Build,build.warn_data_percentage=75",
+  "fqbn": "Croduino_Boards:avr:basic3",
+  "hardwareFolders": "/Applications/Arduino.app/Contents/Java/hardware,/Users/nitkonitkic/Library/Arduino15/packages",
+  "otherLibrariesFolders": "/Users/nitkonitkic/Documents/Arduino/libraries",
+  "runtime.ide.version": "10815",
+  "sketchLocation": "/Users/nitkonitkic/Documents/Code/Weather_Station_And_Clock/Weather_Station_And_Clock.ino"
+}

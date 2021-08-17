@@ -10,12 +10,27 @@
 #pragma once
 
 uint8_t timer_state = 0;
-uint32_t start = 0;
+uint32_t timer_start = 0;
 
 uint8_t s;
 
 uint8_t timer_set_m = 0, timer_set_s = 5;
 uint32_t timeTotal, timer_stop;
+
+void drawTimer(OLED_Display &display,
+               BME280 &bme280,
+               PCF85063A &pcf85063a, bool ignore);
+
+void checkTimer(OLED_Display &display,
+                BME280 &bme280,
+                PCF85063A &pcf85063a)
+{
+    if (timer_state == 1 && (millis() - timer_start) / 1000 > timeTotal)
+    {
+        drawTimer(display, bme280, pcf85063a, 1);
+        drawTimer(display, bme280, pcf85063a, 0);
+    }
+}
 
 void timerStateCallback()
 {
@@ -28,12 +43,12 @@ void timerStateCallback()
 
     if (timer_state == 1)
     {
-        start = millis();
+        timer_start = millis();
         timeTotal = timer_set_m * 60 + timer_set_s - 1;
     }
     else if (timer_state == 2)
     {
-        timer_stop = (timeTotal - (millis() - start) / 1000);
+        timer_stop = (timeTotal - (millis() - timer_start) / 1000);
     }
 }
 
@@ -49,7 +64,7 @@ void timerSetupCallback()
 
 void drawTimer(OLED_Display &display,
                BME280 &bme280,
-               PCF85063A &pcf85063a)
+               PCF85063A &pcf85063a, bool ignore = 0)
 {
     resetText(display);
     display.clearDisplay();
@@ -61,9 +76,9 @@ void drawTimer(OLED_Display &display,
 
     for (int i = 0; i < 32; ++i)
     {
-        float val;
+        float val, prog = 1.0f * (millis() - timer_start) / (1000 * timeTotal);
         if (timer_state == 1)
-            tanh(40 * (i / 32.0 - (1.0f * ((millis() - start))) / (1000 * timeTotal))) + 1;
+            val = 2.0 / (1.0 + exp(-40.0 * (i / 32.0 - prog)));
         else
             val = 0;
         drawPolarLine(display, 64, 32, TWO_PI * i / 32.0, 26, 28 + val * 2, 1.5, 1.0);
@@ -86,25 +101,28 @@ void drawTimer(OLED_Display &display,
 
     case 1:
     {
-        int m = (timeTotal - (millis() - start) / 1000) / 60 % 100,
-            s = (timeTotal - (millis() - start) / 1000) % 60;
+        int m = (timeTotal - (millis() - timer_start) / 1000) / 60 % 100,
+            s = (timeTotal - (millis() - timer_start) / 1000) % 60;
 
-        if ((millis() - start) / 1000 > timeTotal)
+        if ((millis() - timer_start) / 1000 > timeTotal)
         {
             m = 0, s = 0;
 
-            while (digitalRead(3) != LOW)
+            if (!ignore)
             {
-                if (millis() & 512)
+                while (digitalRead(3) != LOW)
                 {
-                    digitalWrite(13, HIGH);
-                    delay(2);
-                    digitalWrite(13, LOW);
-                    delay(2);
+                    if (millis() & 512)
+                    {
+                        digitalWrite(5, HIGH);
+                        delay(2);
+                        digitalWrite(5, LOW);
+                        delay(2);
+                    }
                 }
-            }
 
-            timer_state = 2;
+                timer_state = 2;
+            }
         }
 
         if (m == m % 10)

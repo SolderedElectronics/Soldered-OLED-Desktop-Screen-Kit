@@ -1,0 +1,1 @@
+ /Users/nitkonitkic/Library/Arduino15/packages/arduino/tools/avrdude/6.3.0-arduino18/bin/avrdude -C/Users/nitkonitkic/Library/Arduino15/packages/arduino/tools/avrdude/6.3.0-arduino18/etc/avrdude.conf -v -patmega328p -carduino -P/dev/cu.usbserial-1420 -b57600 -D -Uflash:w:/Users/nitkonitkic/Documents/Code/Weather_Station_And_Clock/Build/Weather_Station_And_Clock.ino.hex:i
