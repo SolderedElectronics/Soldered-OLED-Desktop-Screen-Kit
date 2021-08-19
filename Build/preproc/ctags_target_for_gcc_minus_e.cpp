@@ -1,75 +1,55 @@
 # 1 "/Users/nitkonitkic/Documents/Code/Weather_Station_And_Clock/Weather_Station_And_Clock.ino"
-
-
+# 2 "/Users/nitkonitkic/Documents/Code/Weather_Station_And_Clock/Weather_Station_And_Clock.ino" 2
+# 3 "/Users/nitkonitkic/Documents/Code/Weather_Station_And_Clock/Weather_Station_And_Clock.ino" 2
 # 4 "/Users/nitkonitkic/Documents/Code/Weather_Station_And_Clock/Weather_Station_And_Clock.ino" 2
-# 5 "/Users/nitkonitkic/Documents/Code/Weather_Station_And_Clock/Weather_Station_And_Clock.ino" 2
-# 6 "/Users/nitkonitkic/Documents/Code/Weather_Station_And_Clock/Weather_Station_And_Clock.ino" 2
 
+# 6 "/Users/nitkonitkic/Documents/Code/Weather_Station_And_Clock/Weather_Station_And_Clock.ino" 2
+# 7 "/Users/nitkonitkic/Documents/Code/Weather_Station_And_Clock/Weather_Station_And_Clock.ino" 2
 # 8 "/Users/nitkonitkic/Documents/Code/Weather_Station_And_Clock/Weather_Station_And_Clock.ino" 2
 # 9 "/Users/nitkonitkic/Documents/Code/Weather_Station_And_Clock/Weather_Station_And_Clock.ino" 2
 # 10 "/Users/nitkonitkic/Documents/Code/Weather_Station_And_Clock/Weather_Station_And_Clock.ino" 2
 # 11 "/Users/nitkonitkic/Documents/Code/Weather_Station_And_Clock/Weather_Station_And_Clock.ino" 2
-# 12 "/Users/nitkonitkic/Documents/Code/Weather_Station_And_Clock/Weather_Station_And_Clock.ino" 2
+
 # 13 "/Users/nitkonitkic/Documents/Code/Weather_Station_And_Clock/Weather_Station_And_Clock.ino" 2
 
-# 15 "/Users/nitkonitkic/Documents/Code/Weather_Station_And_Clock/Weather_Station_And_Clock.ino" 2
-# 16 "/Users/nitkonitkic/Documents/Code/Weather_Station_And_Clock/Weather_Station_And_Clock.ino" 2
 
 
 
 OLED_Display display;
-BME280 bme280;
+SHTC3 shtc;
 PCF85063A pcf85063a;
 
-uint8_t state = 4, lastState = 0;
-Switch btn1(2);
-Switch btn2(3);
+ESP8266Timer ITimer;
+
+uint8_t state = 1, lastState = 0;
+Switch btn1(12);
+Switch btn2(13);
+
+bool btn1Single, btn1Double, btn2Pushed, btn2Single, btn2Double;
 
 void btn1CallbackSingle(void *s)
 {
-    if (state != 5)
-        state = (state + 1) % 5;
+    btn1Single = 1;
 }
 
 void btn1CallbackDouble(void *s)
 {
-    if (state == 5)
-        state = lastState;
-    else
-    {
-        lastState = state;
-        state = 5;
-    }
+    btn1Double = 1;
 }
 
 void btn2CallbackPushed(void *s)
 {
-    if (state == 4)
-        stopwatchStateCallback();
+    btn2Pushed = 1;
 }
 
 void btn2CallbackSingle(void *s)
 {
-    if (state == 2)
-        timerStateCallback();
-    else if (state == 5)
-        menuIncrement();
+    btn2Single = 1;
 }
 
 void btn2CallbackDouble(void *s)
 {
-    if (state == 2)
-        timerSetupCallback();
-    else if (state == 3)
-        worldClockCallback();
-    else if (state == 4)
-        stopwatchSetupCallback();
-}
-
-void btn2CallbackLongPress(void *s)
-{
-    if (state == 5)
-        menuStateCallback();
+    btn2Double = 1;
 }
 
 void timer2ISR()
@@ -80,56 +60,106 @@ void timer2ISR()
 
 void setup()
 {
-    pinMode(5, 0x1);
+    worldClockCallback();
+    pinMode(14, 0x01);
 
-    // Serial.begin(115200);
+    Serial.begin(74880);
 
-    FrequencyTimer2::setPeriod(500);
-    FrequencyTimer2::setOnOverflow(timer2ISR);
+    ITimer.attachInterruptInterval(1000, timer2ISR);
 
     btn1.setSingleClickCallback(&btn1CallbackSingle, (void *)"0");
     btn1.setDoubleClickCallback(&btn1CallbackDouble, (void *)"0");
 
     btn2.setSingleClickCallback(&btn2CallbackSingle, (void *)"0");
     btn2.setDoubleClickCallback(&btn2CallbackDouble, (void *)"0");
-    btn2.setLongPressCallback(&btn2CallbackLongPress, (void *)"0");
     btn2.setPushedCallback(&btn2CallbackPushed, (void *)"0");
 
-    bme280.begin();
+    shtc.begin();
     pcf85063a.begin();
     display.begin();
+
+    EEPROM.begin(16);
 
     delay(2000);
 }
 
 void loop()
 {
-    checkTimer(display, bme280, pcf85063a);
+    if (btn1Single)
+    {
+        if (state != 5)
+            state = (state + 1) % 5;
+        btn1Single = 0;
+    }
+    if (btn1Double)
+    {
+        if (state == 5)
+            state = lastState;
+        else
+        {
+            lastState = state;
+            state = 5;
+        }
+        btn1Double = 0;
+    }
+    if (btn2Pushed)
+    {
+        if (state == 4)
+            stopwatchStateCallback();
+        btn2Pushed = 0;
+    }
+    if (btn2Single)
+    {
+        if (state == 0)
+            analogClockCallback();
+        else if (state == 1)
+            digitalClockCallback();
+        else if (state == 2)
+            timerStateCallback();
+        else if (state == 5)
+            menuIncrement();
+
+        btn2Single = 0;
+    }
+    if (btn2Double)
+    {
+        if (state == 2)
+            timerSetupCallback();
+        else if (state == 3)
+            worldClockCallback();
+        else if (state == 4)
+            stopwatchSetupCallback();
+        else if (state == 5)
+            menuStateCallback();
+        btn2Double = 0;
+    }
+
+    checkTimer(display, shtc, pcf85063a);
 
     switch (state)
     {
     case 0:
-        drawAnalogClock(display, bme280, pcf85063a);
+        drawAnalogClock(display, shtc, pcf85063a);
         delay(100);
         break;
     case 1:
-        drawDigitalClock(display, bme280, pcf85063a);
+        drawDigitalClock(display, shtc, pcf85063a);
         delay(100);
         break;
     case 2:
-        drawTimer(display, bme280, pcf85063a, 0);
+        drawTimer(display, shtc, pcf85063a, 0);
         delay(10);
         break;
     case 3:
-        drawWorldClock(display, bme280, pcf85063a);
+        drawWorldClock(display, shtc, pcf85063a);
         delay(10);
         break;
     case 4:
-        drawStopwatch(display, bme280, pcf85063a);
+        drawStopwatch(display, shtc, pcf85063a);
         delay(10);
         break;
     case 5:
-        drawMenu(display, bme280, pcf85063a);
+        drawMenu(display, shtc, pcf85063a, ITimer, (timer_callback)timer2ISR);
         delay(10);
         break;
     default:

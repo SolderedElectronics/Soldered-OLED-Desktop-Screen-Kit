@@ -32,15 +32,15 @@ uint8_t pattern[8] = {
     0b00000000,
 };
 
-const char week_0[] PROGMEM = "Sun";
-const char week_1[] PROGMEM = "Mon";
-const char week_2[] PROGMEM = "Tue";
-const char week_3[] PROGMEM = "Wed";
-const char week_4[] PROGMEM = "Thu";
-const char week_5[] PROGMEM = "Fri";
-const char week_6[] PROGMEM = "Sat";
+const char week_0[] = "Sun";
+const char week_1[] = "Mon";
+const char week_2[] = "Tue";
+const char week_3[] = "Wed";
+const char week_4[] = "Thu";
+const char week_5[] = "Fri";
+const char week_6[] = "Sat";
 
-const char *const weekDays[] PROGMEM = {
+const char *weekDays[] = {
     week_0,
     week_1,
     week_2,
@@ -50,26 +50,34 @@ const char *const weekDays[] PROGMEM = {
     week_6,
 };
 
-void setTimeZone(uint8_t i)
+void setTimeZone(uint8_t timeZone)
 {
     uint32_t flag = 0xABCDEFED;
-    EEPROM.update(0, flag);
+    int address = 0;
 
-    EEPROM.update(10, i);
+    EEPROM.put(address, flag);
+    address += sizeof(flag);
+
+    EEPROM.put(address, timeZone);
+
+    EEPROM.commit();
 }
 
 int getTimeZone()
 {
-    uint32_t flag = 0xABCDEFED;
-    uint32_t i;
+    uint32_t flag;
+    int address = 0;
 
-    EEPROM.get(0, i);
+    EEPROM.get(address, flag);
+    address += sizeof(flag);
 
-    if (i == flag)
-        return EEPROM.read(10);
+    if (flag == 0xABCDEFED)
+    {
+        uint8_t r;
+        EEPROM.get(address, r);
+        return r;
+    }
 
-    EEPROM.put(0, flag);
-    EEPROM.update(10, 0);
-
+    setTimeZone(0);
     return 0;
 }

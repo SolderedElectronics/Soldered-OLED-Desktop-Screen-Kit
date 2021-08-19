@@ -1,7 +1,8 @@
 #line 1 "/Users/nitkonitkic/Documents/Code/Weather_Station_And_Clock/Screen_Menu.h"
-#include "BME280-SOLDERED.h"
+#include "SHTC3-SOLDERED.h"
 #include "PCF85063A-SOLDERED.h"
 #include "OLED-Display-SOLDERED.h"
+#include "ESP8266TimerInterrupt.h"
 
 #include "Helpers.h"
 
@@ -25,7 +26,7 @@ void drawBlinky(OLED_Display &display, uint8_t *settings, int n, const char *ind
     else
     {
         char a[16];
-        strcpy_P(a, (PGM_P)pgm_read_word(&(indexed[settings[n]])));
+        strcpy(a, indexed[settings[n]]);
         if (millis() & 512 && menu_state == n)
             memset(a, ' ', strlen(a));
         display.print(a);
@@ -87,8 +88,10 @@ bool validTime(uint8_t *settings)
 }
 
 void drawMenu(OLED_Display &display,
-              BME280 &bme280,
-              PCF85063A &pcf85063a)
+              SHTC3 &shtc,
+              PCF85063A &pcf85063a,
+              ESP8266Timer &ITimer,
+              timer_callback timer2ISR)
 {
     resetText(display);
     display.clearDisplay();
@@ -159,7 +162,9 @@ void drawMenu(OLED_Display &display,
     else
         display.print((int)settings[13]);
 
+    ITimer.detachInterrupt();
     setTimeZone(settings[13]);
+    ITimer.attachInterruptInterval(1000, timer2ISR);
 
     display.display();
 }

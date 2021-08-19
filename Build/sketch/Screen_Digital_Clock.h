@@ -1,5 +1,5 @@
 #line 1 "/Users/nitkonitkic/Documents/Code/Weather_Station_And_Clock/Screen_Digital_Clock.h"
-#include "BME280-SOLDERED.h"
+#include "SHTC3-SOLDERED.h"
 #include "PCF85063A-SOLDERED.h"
 #include "OLED-Display-SOLDERED.h"
 
@@ -8,8 +8,15 @@
 
 #pragma once
 
+uint8_t digital_clock_state = 0;
+
+void digitalClockCallback()
+{
+    digital_clock_state = (digital_clock_state + 1) % 2;
+}
+
 void drawDigitalClock(OLED_Display &display,
-                      BME280 &bme280,
+                      SHTC3 &shtc,
                       PCF85063A &pcf85063a)
 {
     resetText(display);
@@ -19,7 +26,10 @@ void drawDigitalClock(OLED_Display &display,
     display.setTextSize(2);
     display.setTextColor(WHITE);
 
-    display.setCursor(9, 40);
+    if (digital_clock_state == 0)
+        display.setCursor(6, 40);
+    else
+        display.setCursor(6, 47);
 
     int secs = pcf85063a.getSecond(),
         mins = pcf85063a.getMinute(),
@@ -29,61 +39,48 @@ void drawDigitalClock(OLED_Display &display,
         display.print("0");
     display.print(hours);
 
-    display.print(":");
+    if (millis() & 512)
+        display.print(":");
+    else
+        display.setCursor(display.getCursorX() + 8, display.getCursorY());
 
     if (mins < 10)
         display.print("0");
     display.print(mins);
 
-    float temp, humidity, pressure;
-    bme280.readSensorData(temp, humidity, pressure);
+    shtc.sample();
+    float temp, humidity;
+    temp = shtc.readTempC();
+    humidity = shtc.readHumidity();
 
-    display.setFont();
-    display.setTextSize(1);
+    // Serial.print("Temp: ");
+    // Serial.print(temp);
+    // Serial.print(" Humidity: ");
+    // Serial.print(humidity);
+    // Serial.print(" Pressure: ");
+    // Serial.println(pressure);
+    // Serial.println();
 
-    char a[] = "00 s  00.00 C  00.00 %  0000.00 hPa  ";
+    if (digital_clock_state == 0)
+    {
+        display.setFont();
+        display.setTextSize(1);
 
-    a[0] = secs / 10 % 10 + '0';
-    if (a[0] == '0')
-        a[0] = ' ';
-    a[1] = secs % 10 + '0';
+        char a[40];
+        sprintf(a, "%02d s  %02.2f C  %02.2f %%  ", secs, temp, humidity);
 
-    a[6] = (int)temp / 10 % 10 + '0';
-    if (a[6] == '0')
-        a[6] = ' ';
-    a[7] = (int)temp % 10 + '0';
-    a[9] = (int)abs(temp * 10) % 10 + '0';
-    a[10] = (int)abs(temp * 100) % 10 + '0';
+        int16_t x1, y1;
+        uint16_t w, h;
+        display.getTextBounds(a, 0, 0, &x1, &y1, &w, &h);
 
-    a[15] = (int)humidity / 10 % 10 + '0';
-    if (a[15] == '0')
-        a[15] = ' ';
-    a[16] = (int)humidity % 10 + '0';
-    a[18] = (int)abs(humidity * 10) % 10 + '0';
-    a[19] = (int)abs(humidity * 100) % 10 + '0';
+        int offset = (millis() / 200) % w;
 
-    a[24] = (int)pressure / 1000 % 10 + '0';
-    if (a[24] == '0')
-        a[24] = ' ';
+        display.setCursor(-offset, 55);
+        display.setTextWrap(false);
 
-    a[25] = (int)pressure / 100 % 10 + '0';
-    a[26] = (int)pressure / 10 % 10 + '0';
-    a[27] = (int)pressure % 10 + '0';
-
-    a[29] = (int)(pressure * 10) % 10 + '0';
-    a[30] = (int32_t)(pressure * 100) % 10 + '0';
-
-    int16_t x1, y1;
-    uint16_t w, h;
-    display.getTextBounds(a, 0, 0, &x1, &y1, &w, &h);
-
-    int offset = (millis() / 200) % w;
-
-    display.setCursor(-offset, 55);
-    display.setTextWrap(false);
-
-    display.print(a);
-    display.print(a);
+        display.print(a);
+        display.print(a);
+    }
 
     display.display();
 }

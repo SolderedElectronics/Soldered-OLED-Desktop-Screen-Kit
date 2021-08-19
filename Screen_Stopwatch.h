@@ -38,7 +38,7 @@ void stopwatchSetupCallback()
 }
 
 void drawStopwatch(OLED_Display &display,
-                   BME280 &bme280,
+                   SHTC3 &shtc,
                    PCF85063A &pcf85063a)
 {
     resetText(display);

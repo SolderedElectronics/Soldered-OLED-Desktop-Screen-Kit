@@ -1,14 +1,16 @@
 #line 1 "/Users/nitkonitkic/Documents/Code/Weather_Station_And_Clock/Screen_World_Clock.h"
-#include "BME280-SOLDERED.h"
+#include "SHTC3-SOLDERED.h"
 #include "PCF85063A-SOLDERED.h"
 #include "OLED-Display-SOLDERED.h"
+
+#pragma once
 
 #include "World.h"
 
 #include "Helpers.h"
 #include "fonts/DSEG14_Modern_Mini_Regular_15.h"
 
-#pragma once
+int city_offset = 95;
 
 char city0[] = "ZAG";
 int city0_x, city0_y, city0_t;
@@ -19,7 +21,7 @@ int city2_x, city2_y, city2_t;
 
 void worldClockCallback()
 {
-    int num_shuffles = 10;
+    int num_shuffles = 50;
 
     int n = sizeof cityName / sizeof cityName[0];
     int idx[n];
@@ -38,27 +40,31 @@ void worldClockCallback()
         }
     }
 
-    strcpy_P(city0, (PGM_P)pgm_read_word(&(cityName[idx[0]])));
-    city0_x = pgm_read_byte_near(cityCoordAndZone + 3 * idx[0]);
-    city0_y = pgm_read_byte_near(cityCoordAndZone + 3 * idx[0] + 1);
-    city0_t = pgm_read_byte_near(cityCoordAndZone + 3 * idx[0] + 2);
-    strcpy_P(city1, (PGM_P)pgm_read_word(&(cityName[idx[1]])));
-    city1_x = pgm_read_byte_near(cityCoordAndZone + 3 * idx[1]);
-    city1_y = pgm_read_byte_near(cityCoordAndZone + 3 * idx[1] + 1);
-    city1_t = pgm_read_byte_near(cityCoordAndZone + 3 * idx[1] + 2);
-    strcpy_P(city2, (PGM_P)pgm_read_word(&(cityName[idx[2]])));
-    city2_x = pgm_read_byte_near(cityCoordAndZone + 3 * idx[2]);
-    city2_y = pgm_read_byte_near(cityCoordAndZone + 3 * idx[2] + 1);
-    city2_t = pgm_read_byte_near(cityCoordAndZone + 3 * idx[2] + 2);
+    strcpy(city0, cityName[idx[0]]);
+    city0_x = cityCoordAndZone[3 * idx[0]];
+    city0_y = cityCoordAndZone[3 * idx[0] + 1];
+    city0_t = cityCoordAndZone[3 * idx[0] + 2];
+    strcpy(city1, cityName[idx[1]]);
+    city1_x = cityCoordAndZone[3 * idx[1]];
+    city1_y = cityCoordAndZone[3 * idx[1] + 1];
+    city1_t = cityCoordAndZone[3 * idx[1] + 2];
+    strcpy(city2, cityName[idx[2]]);
+    city2_x = cityCoordAndZone[3 * idx[2]];
+    city2_y = cityCoordAndZone[3 * idx[2] + 1];
+    city2_t = cityCoordAndZone[3 * idx[2] + 2];
 }
 
 void drawWorldClock(OLED_Display &display,
-                    BME280 &bme280,
+                    SHTC3 &shtc,
                     PCF85063A &pcf85063a)
 {
     resetText(display);
     display.clearDisplay();
     // display.drawBitmap(0, 0, world_map, 200, 101, SSD1306_BLACK, SSD1306_WHITE);
+
+    int secs = pcf85063a.getSecond(),
+        mins = pcf85063a.getMinute(),
+        hours = pcf85063a.getHour();
 
     display.drawCircle(32, 32, 35, SSD1306_WHITE);
     display.startWrite();
@@ -85,7 +91,7 @@ void drawWorldClock(OLED_Display &display,
     display.setTextColor(SSD1306_WHITE);
     display.setTextSize(1);
 
-    int x = city0_x, y = city0_y, r, _x;
+    int x = (city0_x + city_offset) & 127, y = city0_y, r, _x;
 
     r = 35 - 0.03 * (y - 32) * (y - 32);
     _x = (x - (millis() >> 7) & 127);
@@ -99,10 +105,22 @@ void drawWorldClock(OLED_Display &display,
     display.drawLine(71, 13, _x, y + 1, SSD1306_BLACK);
 
     display.setCursor(73, 10);
-    display.print(city0);
-    display.print(" 13:00");
 
-    x = city1_x, y = city1_y;
+    display.print(city0);
+    display.print(" ");
+
+    int v = (hours - getTimeZone() + city0_t + 48) % 24;
+    if (v < 10)
+        display.print("0");
+    display.print(v);
+
+    display.print(":");
+
+    if (mins < 10)
+        display.print("0");
+    display.print(mins);
+
+    x = (city1_x + city_offset) & 127, y = city1_y;
 
     r = 35 - 0.03 * (y - 32) * (y - 32);
     _x = (x - (millis() >> 7) & 127);
@@ -117,9 +135,20 @@ void drawWorldClock(OLED_Display &display,
 
     display.setCursor(73, 30);
     display.print(city1);
-    display.print(" 13:00");
+    display.print(" ");
 
-    x = city2_x, y = city2_y;
+    v = (hours - getTimeZone() + city1_t + 48) % 24;
+    if (v < 10)
+        display.print("0");
+    display.print(v);
+
+    display.print(":");
+
+    if (mins < 10)
+        display.print("0");
+    display.print(mins);
+
+    x = (city2_x + city_offset) & 127, y = city2_y;
 
     r = 35 - 0.03 * (y - 32) * (y - 32);
     _x = (x - (millis() >> 7) & 127);
@@ -134,7 +163,18 @@ void drawWorldClock(OLED_Display &display,
 
     display.setCursor(73, 50);
     display.print(city2);
-    display.print(" 13:00");
+    display.print(" ");
+
+    v = (hours - getTimeZone() + city2_t + 48) % 24;
+    if (v < 10)
+        display.print("0");
+    display.print(v);
+
+    display.print(":");
+
+    if (mins < 10)
+        display.print("0");
+    display.print(mins);
 
     display.display();
 

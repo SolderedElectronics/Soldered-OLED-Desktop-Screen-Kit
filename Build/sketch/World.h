@@ -1029,28 +1029,28 @@ const uint8_t world_map[] PROGMEM = {
 
 bool getWorldXY(int x, int y)
 {
-  return ((uint8_t)pgm_read_byte(&world_map[16 * y + (x >> 3)]) &
-          (1 << (7 - (x & 7))));
+    return ((uint8_t)pgm_read_byte(&world_map[16 * y + (x >> 3)]) &
+            (1 << (7 - (x & 7))));
 }
 
-const char city_0[] PROGMEM = "NYC";
-const char city_1[] PROGMEM = "LON";
-const char city_2[] PROGMEM = "PAR";
-const char city_3[] PROGMEM = "TKY";
-const char city_4[] PROGMEM = "HKG";
-const char city_5[] PROGMEM = "SGP";
-const char city_6[] PROGMEM = "LAX";
-const char city_7[] PROGMEM = "BEI";
-const char city_8[] PROGMEM = "WSH";
-const char city_9[] PROGMEM = "SYD";
-const char city_10[] PROGMEM = "SEO";
-const char city_11[] PROGMEM = "BER";
-const char city_12[] PROGMEM = "MCW";
-const char city_13[] PROGMEM = "ZAG";
-const char city_14[] PROGMEM = "DUB";
-const char city_16[] PROGMEM = "ROM";
+const char city_0[] = "NYC";
+const char city_1[] = "LON";
+const char city_2[] = "PAR";
+const char city_3[] = "TKY";
+const char city_4[] = "HKG";
+const char city_5[] = "SGP";
+const char city_6[] = "LAX";
+const char city_7[] = "BEI";
+const char city_8[] = "WSH";
+const char city_9[] = "SYD";
+const char city_10[] = "SEO";
+const char city_11[] = "BER";
+const char city_12[] = "MCW";
+const char city_13[] = "ZAG";
+const char city_14[] = "DUB";
+const char city_16[] = "ROM";
 
-const char *const cityName[] PROGMEM = {
+const char *const cityName[] = {
     city_0,
     city_1,
     city_2,
@@ -1069,20 +1069,23 @@ const char *const cityName[] PROGMEM = {
     city_16,
 };
 
-const PROGMEM uint8_t cityCoordAndZone[] PROGMEM = {
-    176, 42, -4 + 24,
-    13, 31, 1,
-    20, 32, 2,
-    94, 43, 9,
-    13, 31, 1, //81, 51, 8, //
-    75, 63, 8,
-    152, 42, -7 + 24,
-    81, 40, 8,
-    179, 37, -7 + 24,
-    100, 86, 10,
-    88, 42, 9,
-    22, 32, 2,
-    37, 28, 3,
-    24, 36, 2,
-    47, 51, 4,
-    22, 39, 2};
+const uint8_t cityCoordAndZone[] = {
+    112, 27, -4 + 24,
+    8, 19, 1,
+    12, 20, 2,
+    60, 27, 9,
+    51, 32, 8,
+    48, 39, 8,
+    97, 26, -7 + 24,
+    51, 25, 8,
+    114, 23, -7 + 24,
+    64, 54, 10,
+    56, 26, 9,
+    14, 20, 2,
+    23, 17, 3,
+    15, 22, 2,
+    30, 32, 4,
+    14, 24, 2};
+
+//200x101
+//128x64

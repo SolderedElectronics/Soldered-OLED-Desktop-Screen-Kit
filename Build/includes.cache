@@ -2,22 +2,22 @@
   {
     "Sourcefile": null,
     "Include": "",
-    "Includepath": "/Users/nitkonitkic/Library/Arduino15/packages/Croduino_Boards/hardware/avr/1.0.0/cores/arduino"
+    "Includepath": "/Users/nitkonitkic/Library/Arduino15/packages/Dasduino_Boards/hardware/esp8266/1.0.0/cores/esp8266"
   },
   {
     "Sourcefile": null,
     "Include": "",
-    "Includepath": "/Users/nitkonitkic/Library/Arduino15/packages/Croduino_Boards/hardware/avr/1.0.0/variants/eightanaloginputs"
+    "Includepath": "/Users/nitkonitkic/Library/Arduino15/packages/Dasduino_Boards/hardware/esp8266/1.0.0/variants/generic"
   },
   {
     "Sourcefile": "/Users/nitkonitkic/Documents/Code/Weather_Station_And_Clock/Build/sketch/Weather_Station_And_Clock.ino.cpp",
-    "Include": "BME280-SOLDERED.h",
-    "Includepath": "/Users/nitkonitkic/Documents/Arduino/libraries/Soldered-BME280-BME680-Gas-Sensor-Arduino-Library/src"
+    "Include": "SHTC3-SOLDERED.h",
+    "Includepath": "/Users/nitkonitkic/Documents/Arduino/libraries/Soldered-SHTC3-Temperature-Humidity-Sensor-Arduino-Library/src"
   },
   {
     "Sourcefile": "/Users/nitkonitkic/Documents/Code/Weather_Station_And_Clock/Build/sketch/Weather_Station_And_Clock.ino.cpp",
     "Include": "Wire.h",
-    "Includepath": "/Users/nitkonitkic/Library/Arduino15/packages/Croduino_Boards/hardware/avr/1.0.0/libraries/Wire/src"
+    "Includepath": "/Users/nitkonitkic/Library/Arduino15/packages/Dasduino_Boards/hardware/esp8266/1.0.0/libraries/Wire"
   },
   {
     "Sourcefile": "/Users/nitkonitkic/Documents/Code/Weather_Station_And_Clock/Build/sketch/Weather_Station_And_Clock.ino.cpp",
@@ -32,7 +32,12 @@
   {
     "Sourcefile": "/Users/nitkonitkic/Documents/Code/Weather_Station_And_Clock/Build/sketch/Weather_Station_And_Clock.ino.cpp",
     "Include": "EEPROM.h",
-    "Includepath": "/Users/nitkonitkic/Library/Arduino15/packages/Croduino_Boards/hardware/avr/1.0.0/libraries/EEPROM/src"
+    "Includepath": "/Users/nitkonitkic/Library/Arduino15/packages/Dasduino_Boards/hardware/esp8266/1.0.0/libraries/EEPROM"
+  },
+  {
+    "Sourcefile": "/Users/nitkonitkic/Documents/Code/Weather_Station_And_Clock/Build/sketch/Weather_Station_And_Clock.ino.cpp",
+    "Include": "ESP8266TimerInterrupt.h",
+    "Includepath": "/Users/nitkonitkic/Documents/Arduino/libraries/ESP8266TimerInterrupt/src"
   },
   {
     "Sourcefile": "/Users/nitkonitkic/Documents/Code/Weather_Station_And_Clock/Build/sketch/Weather_Station_And_Clock.ino.cpp",
@@ -41,31 +46,21 @@
   },
   {
     "Sourcefile": "/Users/nitkonitkic/Documents/Code/Weather_Station_And_Clock/Build/sketch/Weather_Station_And_Clock.ino.cpp",
-    "Include": "FrequencyTimer2.h",
-    "Includepath": "/Users/nitkonitkic/Documents/Arduino/libraries/FrequencyTimer2"
-  },
-  {
-    "Sourcefile": "/Users/nitkonitkic/Documents/Code/Weather_Station_And_Clock/Build/sketch/Weather_Station_And_Clock.ino.cpp",
     "Include": "",
     "Includepath": null
   },
   {
-    "Sourcefile": "/Users/nitkonitkic/Documents/Arduino/libraries/Soldered-BME280-BME680-Gas-Sensor-Arduino-Library/src/BME280-SOLDERED.cpp",
+    "Sourcefile": "/Users/nitkonitkic/Documents/Arduino/libraries/Soldered-SHTC3-Temperature-Humidity-Sensor-Arduino-Library/src/SHTC3-SOLDERED.cpp",
     "Include": "",
     "Includepath": null
   },
   {
-    "Sourcefile": "/Users/nitkonitkic/Documents/Arduino/libraries/Soldered-BME280-BME680-Gas-Sensor-Arduino-Library/src/libs/BME280/src/BME280.cpp",
+    "Sourcefile": "/Users/nitkonitkic/Documents/Arduino/libraries/Soldered-SHTC3-Temperature-Humidity-Sensor-Arduino-Library/src/libs/SHTC3/SHTC3.cpp",
     "Include": "",
     "Includepath": null
   },
   {
-    "Sourcefile": "/Users/nitkonitkic/Library/Arduino15/packages/Croduino_Boards/hardware/avr/1.0.0/libraries/Wire/src/Wire.cpp",
-    "Include": "",
-    "Includepath": null
-  },
-  {
-    "Sourcefile": "/Users/nitkonitkic/Library/Arduino15/packages/Croduino_Boards/hardware/avr/1.0.0/libraries/Wire/src/utility/twi.c",
+    "Sourcefile": "/Users/nitkonitkic/Library/Arduino15/packages/Dasduino_Boards/hardware/esp8266/1.0.0/libraries/Wire/Wire.cpp",
     "Include": "",
     "Includepath": null
   },
@@ -92,7 +87,7 @@
   {
     "Sourcefile": "/Users/nitkonitkic/Documents/Arduino/libraries/Soldered-OLED-Display-Arduino-Library/src/libs/Adafruit-GFX-Library/Adafruit_SPITFT.cpp",
     "Include": "SPI.h",
-    "Includepath": "/Users/nitkonitkic/Library/Arduino15/packages/Croduino_Boards/hardware/avr/1.0.0/libraries/SPI/src"
+    "Includepath": "/Users/nitkonitkic/Library/Arduino15/packages/Dasduino_Boards/hardware/esp8266/1.0.0/libraries/SPI"
   },
   {
     "Sourcefile": "/Users/nitkonitkic/Documents/Arduino/libraries/Soldered-OLED-Display-Arduino-Library/src/libs/Adafruit-GFX-Library/Adafruit_SPITFT.cpp",
@@ -125,17 +120,17 @@
     "Includepath": null
   },
   {
+    "Sourcefile": "/Users/nitkonitkic/Library/Arduino15/packages/Dasduino_Boards/hardware/esp8266/1.0.0/libraries/EEPROM/EEPROM.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
     "Sourcefile": "/Users/nitkonitkic/Documents/Arduino/libraries/avdweb_Switch/avdweb_Switch.cpp",
     "Include": "",
     "Includepath": null
   },
   {
-    "Sourcefile": "/Users/nitkonitkic/Documents/Arduino/libraries/FrequencyTimer2/FrequencyTimer2.cpp",
-    "Include": "",
-    "Includepath": null
-  },
-  {
-    "Sourcefile": "/Users/nitkonitkic/Library/Arduino15/packages/Croduino_Boards/hardware/avr/1.0.0/libraries/SPI/src/SPI.cpp",
+    "Sourcefile": "/Users/nitkonitkic/Library/Arduino15/packages/Dasduino_Boards/hardware/esp8266/1.0.0/libraries/SPI/SPI.cpp",
     "Include": "",
     "Includepath": null
   }

@@ -1,8 +1,6 @@
-#include "BME280-SOLDERED.h"
+#include "SHTC3-SOLDERED.h"
 #include "PCF85063A-SOLDERED.h"
 #include "OLED-Display-SOLDERED.h"
-
-#include "World.h"
 
 #include "Helpers.h"
 #include "fonts/DSEG14_Modern_Mini_Regular_15.h"
@@ -18,17 +16,17 @@ uint8_t timer_set_m = 0, timer_set_s = 5;
 uint32_t timeTotal, timer_stop;
 
 void drawTimer(OLED_Display &display,
-               BME280 &bme280,
+               SHTC3 &shtc,
                PCF85063A &pcf85063a, bool ignore);
 
 void checkTimer(OLED_Display &display,
-                BME280 &bme280,
+                SHTC3 &shtc,
                 PCF85063A &pcf85063a)
 {
     if (timer_state == 1 && (millis() - timer_start) / 1000 > timeTotal)
     {
-        drawTimer(display, bme280, pcf85063a, 1);
-        drawTimer(display, bme280, pcf85063a, 0);
+        drawTimer(display, shtc, pcf85063a, 1);
+        drawTimer(display, shtc, pcf85063a, 0);
     }
 }
 
@@ -37,9 +35,19 @@ void timerStateCallback()
     if (timer_state == 0 || timer_state == 1 || timer_state == 2)
         timer_state = (timer_state + 1) % 3;
     else if (timer_state == 3)
-        timer_set_m = (timer_set_m + 5) % 100;
+    {
+        if (timer_set_m < 15)
+            timer_set_m = (timer_set_m + 1) % 100;
+        else
+            timer_set_m = (timer_set_m + 5) % 100;
+    }
     else if (timer_state == 4)
-        timer_set_s = (timer_set_s + 5) % 60;
+    {
+        if (timer_set_s < 15)
+            timer_set_s = (timer_set_s + 1) % 60;
+        else
+            timer_set_s = (timer_set_s + 5) % 60;
+    }
 
     if (timer_state == 1)
     {
@@ -63,7 +71,7 @@ void timerSetupCallback()
 }
 
 void drawTimer(OLED_Display &display,
-               BME280 &bme280,
+               SHTC3 &shtc,
                PCF85063A &pcf85063a, bool ignore = 0)
 {
     resetText(display);
@@ -110,13 +118,13 @@ void drawTimer(OLED_Display &display,
 
             if (!ignore)
             {
-                while (digitalRead(3) != LOW)
+                while (digitalRead(13) != LOW)
                 {
                     if (millis() & 512)
                     {
-                        digitalWrite(5, HIGH);
+                        digitalWrite(14, HIGH);
                         delay(2);
-                        digitalWrite(5, LOW);
+                        digitalWrite(14, LOW);
                         delay(2);
                     }
                 }
