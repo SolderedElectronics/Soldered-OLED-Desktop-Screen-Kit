@@ -12,6 +12,7 @@ There are 2 buttons on the top of the device to control it. The function of each
 Left button:
 - Single click: Turn on/off the temperature and humidity bar
 - Double click: Nothing happens
+
 Right button:
 - Single click: Change page
 - Double click: Enter/Exit settings
