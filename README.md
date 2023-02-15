@@ -23,6 +23,7 @@ Right button:
 Left button:
 - Single click: Increment current setting
 - Double click: Go to the next setting
+
 Right button:
 - Single click: Nothing happens
 - Double click: Enter/Exit settings
@@ -33,6 +34,7 @@ Right button:
 Left button:
 - Single click: Start/Reset the counter
 - Double click: Set time for counting
+
 Right button:
 - Single click: Change page
 - Double click: Enter/Exit settings
@@ -43,6 +45,7 @@ Right button:
 Left button:
 - Single click: Nothing happens
 - Double click: Change cities
+
 Right button:
 - Single click: Change page
 - Double click: Enter/Exit settings
@@ -53,6 +56,7 @@ Right button:
 Left button:
 - Single click: Start/Stop
 - Double click: Reset
+
 Right button:
 - Single click: Change page
 - Double click: Enter/Exit settings
@@ -64,6 +68,7 @@ Right button:
 Left button:
 - Single click: Show/Hide temperature and humidity
 - Double click: Nothing happens
+
 Right button:
 - Single click: Change page
 - Double click: Enter/Exit settings
