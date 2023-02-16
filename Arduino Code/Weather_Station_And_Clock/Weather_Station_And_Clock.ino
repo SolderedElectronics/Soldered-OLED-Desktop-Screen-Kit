@@ -22,16 +22,19 @@
 #include "SHTC3-SOLDERED.h"
 #include "avdweb_Switch.h"
 
+// Include font
+#include "fonts/DSEG14_Modern_Mini_Regular_15.h"
+
 // Include header files for each page on the screen
-#include "Screen_Analog_Clock.h"
-#include "Screen_Digital_Clock.h"
-#include "Screen_Menu.h"
-#include "Screen_Stopwatch.h"
-#include "Screen_Timer.h"
-#include "Screen_World_Clock.h"
+#include "include/Screen_Analog_Clock.h"
+#include "include/Screen_Digital_Clock.h"
+#include "include/Screen_Menu.h"
+#include "include/Screen_Stopwatch.h"
+#include "include/Screen_Timer.h"
+#include "include/Screen_World_Clock.h"
 
 // Include header file for the helper functions
-#include "Helpers.h"
+#include "include/Helpers.h"
 
 // Create needed objects
 OLED_Display display;
@@ -86,6 +89,10 @@ void timer2ISR()
 
 void setup()
 {
+    // Init EEPROM and set default flag if it's not
+    EEPROM.begin(16);
+    checkEEPROM();
+  
     worldClockCallback();
     pinMode(14, OUTPUT);
 
@@ -104,10 +111,6 @@ void setup()
     shtc.begin();
     pcf85063a.begin();
     display.begin();
-
-    // Init EEPROM and set default flag if it's not
-    EEPROM.begin(16);
-    checkEEPROM();
 
     // Wait a bit
     delay(2000);

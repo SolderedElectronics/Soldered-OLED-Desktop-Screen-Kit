@@ -3,7 +3,6 @@
 #include "World.h"
 
 #include "Helpers.h"
-#include "fonts/DSEG14_Modern_Mini_Regular_15.h"
 
 int city_offset = 95;
 
